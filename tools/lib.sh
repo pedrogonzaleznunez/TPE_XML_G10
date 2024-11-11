@@ -1,4 +1,4 @@
-# utils.sh
+#!/bin/bash
 
 # Funcion para manejar errores y generar XML de error
 generate_error_xml() {

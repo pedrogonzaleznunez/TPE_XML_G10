@@ -18,7 +18,13 @@ mkdir -p "data" "schemas" "tools" "extractors"
 # Borrado de archivos temporales de ejecuciones anteriores, si existen
 rm -rf data/* $CONGRESS_PAGE
 
-# Verificacion de argumentos
+# Verificacion de cantidad de argumentos
+if [ ! $# -eq 1 ]; then 
+    echo "Error: Expecting only one argument, but recived $#." >&2
+    generate_error_xml "Expecting only one argument, but recived $#"
+fi
+
+# Verificacion de argumento CONGRESS_NUMBER
 if [ -z "$CONGRESS_NUMBER" ]; then
     echo "Error: Congress number must be provided." >&2
     generate_error_xml "Congress number must be provided"
@@ -54,6 +60,5 @@ validate_xml_with_schema $CONGRESS_DATA $CONGRESS_DATA_SCHEMA
 
 # Procesar el archivo combinado con XSLT
 echo "Generating HTML page from $CONGRESS_DATA..."
-xsltproc $GENERATE_HTML $CONGRESS_DATA > $CONGRESS_PAGE
-
+java net.sf.saxon.Transform -s:$CONGRESS_DATA -xsl:$GENERATE_HTML -o:$CONGRESS_PAGE
 echo "HTML page generated: $CONGRESS_PAGE"

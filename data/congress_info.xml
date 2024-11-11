@@ -10,10 +10,10 @@
      R
     </type>
     <startDate>
-     2021-01-03
+     1935-01-03
     </startDate>
     <endDate>
-     2022-01-03
+     1935-08-26
     </endDate>
     <number>
      1
@@ -27,10 +27,10 @@
      R
     </type>
     <startDate>
-     2021-01-03
+     1935-01-03
     </startDate>
     <endDate>
-     2022-01-03
+     1935-08-26
     </endDate>
     <number>
      1
@@ -44,10 +44,10 @@
      R
     </type>
     <startDate>
-     2022-01-03
+     1936-01-03
     </startDate>
     <endDate>
-     2023-01-03
+     1936-06-20
     </endDate>
     <number>
      2
@@ -61,10 +61,10 @@
      R
     </type>
     <startDate>
-     2022-01-03
+     1936-01-03
     </startDate>
     <endDate>
-     2023-01-03
+     1936-06-20
     </endDate>
     <number>
      2
@@ -72,27 +72,27 @@
    </item>
   </sessions>
   <name>
-   117th Congress
+   74th Congress
   </name>
   <startYear>
-   2021
+   1935
   </startYear>
   <endYear>
-   2022
+   1936
   </endYear>
   <updateDate>
-   2021-01-12T20:05:52Z
+   2017-06-09T19:10:31Z
   </updateDate>
   <number>
-   117
+   74
   </number>
   <url>
-   https://api.congress.gov/v3/congress/117?format=xml
+   https://api.congress.gov/v3/congress/74?format=xml
   </url>
  </congress>
  <request>
   <congress>
-   117
+   74
   </congress>
   <contentType>
    application/xml
