@@ -3,10 +3,15 @@ declare variable $congress_info external;
 declare variable $congress_data_schema external;
 
 declare function local:normalize($value) {
-  if (normalize-space(string($value)) != "") then normalize-space(string($value)) else $value
+  if (normalize-space(string($value)) != "") 
+  then normalize-space(string($value)) 
+  else $value
 };
 
-declare function local:generate-xml($congress_members_info as document-node(), $congress_info as document-node()) as element(data) {
+declare function local:generate-xml(
+  $congress_members_info as document-node(), 
+  $congress_info as document-node()
+) as element(data) {
   element data {
     attribute xsi:noNamespaceSchemaLocation {$congress_data_schema},
     element congress {
@@ -21,43 +26,42 @@ declare function local:generate-xml($congress_members_info as document-node(), $
         return element chamber {
           element name { local:normalize($chamber_name) },
           element members {
-  let $chamber_members := $congress_members_info//members/member[
-    for $member in . 
-    for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
-    return $member
-  ]
-  return 
-    if (empty($chamber_members)) then
-      element member {
-        element name { '(void)' },
-        element state { '(void)' },
-        element party { '(void)' },
-        element image_url { 'placeholder.jpg' },
-        element period {
-          attribute from { '(void)' },
-          attribute to { '(void)' }
-        }
-      }
-    else
-      for $member in $chamber_members
-      for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
-      return element member {
-        element name { local:normalize($member/name) },
-        element state { local:normalize($member/state) },
-        element party { local:normalize($member/partyName) },
-        element image_url { local:normalize($member/depiction/imageUrl) },
-        element period {
-          attribute from { local:normalize($term/startYear) },
-          attribute to { local:normalize($term/endYear) }
-        }
-      }
-},
-
+            let $chamber_members := $congress_members_info//members/member[
+              for $member in . 
+              for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
+              return $member
+            ]
+            return 
+              if (empty($chamber_members)) then
+                element member {
+                  element name { '(void)' },
+                  element state { '(void)' },
+                  element party { '(void)' },
+                  element image_url { 'placeholder.jpg' },
+                  element period {
+                    attribute from { '(void)' },
+                    attribute to { '(void)' }
+                  }
+                }
+              else
+                for $member in $chamber_members
+                for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
+                return element member {
+                  element name { local:normalize($member/name) },
+                  element state { local:normalize($member/state) },
+                  element party { local:normalize($member/partyName) },
+                  element image_url { local:normalize($member/depiction/imageUrl) },
+                  element period {
+                    attribute from { local:normalize($term/startYear) },
+                    attribute to { local:normalize($term/endYear) }
+                  }
+                }
+          },
           element sessions {
             for $session in $congress_info//sessions/item[chamber = $chamber_name]
             return element session {
               element number {
-                if (empty($session/number)) then -1 else local:normalize(number($session/number))
+                if (empty($session/number)) then 0 else local:normalize(number($session/number))
               },
               element period {
                 attribute from { local:normalize($session/startDate) },

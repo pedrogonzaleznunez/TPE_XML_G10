@@ -83,8 +83,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <xsl:for-each
-                                    select="congress/chambers/chamber[name = 'House of Representatives']/sessions/session">
+                                <xsl:for-each select="congress/chambers/chamber[name = 'House of Representatives']/sessions/session">
+                                    <xsl:sort select="number" order="ascending" data-type="number"/>
                                     <tr>
                                         <td>
                                             <xsl:value-of select="number" />
@@ -157,8 +157,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <xsl:for-each
-                                    select="congress/chambers/chamber[name = 'Senate']/sessions/session">
+                                <xsl:for-each select="congress/chambers/chamber[name = 'Senate']/sessions/session">
+                                    <xsl:sort select="number" order="ascending" data-type="number"/>
                                     <tr>
                                         <td>
                                             <xsl:value-of select="number" />
