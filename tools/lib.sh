@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Funcion para manejar errores y generar XML de error
-generate_error_xml() {
+generate_error_xml(){
     local error_message=$1
     echo '<?xml version="1.0" encoding="UTF-8"?>' > $CONGRESS_DATA
     echo '<data>' >> $CONGRESS_DATA

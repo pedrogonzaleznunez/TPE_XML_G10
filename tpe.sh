@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Libreria de funciones 
+# Libreria de funciones
 source tools/lib.sh
 
 CONGRESS_NUMBER=$1
@@ -14,6 +14,7 @@ EXTRACT_CONGRESS_DATA="extractors/extract_congress_data.xq"
 
 # Creacion de directorios si no existen
 mkdir -p "data" "schemas" "tools" "extractors"
+chmod 777 "data" "schemas" "tools" "extractors"
 
 # Borrado de archivos temporales de ejecuciones anteriores, si existen
 rm -rf data/* $CONGRESS_PAGE
@@ -57,6 +58,7 @@ validate_xml $CONGRESS_MEMBERS_INFO
 
 # Combinacion de los archivos de datos en un unico XML
 echo "Combining $CONGRESS_INFO and $CONGRESS_MEMBERS_INFO into $CONGRESS_DATA..."
+
 java net.sf.saxon.Query -s:$CONGRESS_INFO -q:$EXTRACT_CONGRESS_DATA \
     congress_members_info="../$CONGRESS_MEMBERS_INFO" \
     congress_info="../$CONGRESS_INFO" \
