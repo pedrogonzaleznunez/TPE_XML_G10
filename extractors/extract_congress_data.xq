@@ -21,23 +21,44 @@ declare function local:generate-xml($congress_members_info as document-node(), $
         return element chamber {
           element name { local:normalize($chamber_name) },
           element members {
-            for $member in $congress_members_info//members/member
-            for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
-            return element member {
-              element name { local:normalize($member/name) },
-              element state { local:normalize($member/state) },
-              element party { local:normalize($member/partyName) },
-              element image_url { local:normalize($member/depiction/imageUrl) },
-              element period {
-                attribute from { local:normalize($term/startYear) },
-                attribute to { local:normalize($term/endYear) }
-              }
-            }
-          },
+  let $chamber_members := $congress_members_info//members/member[
+    for $member in . 
+    for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
+    return $member
+  ]
+  return 
+    if (empty($chamber_members)) then
+      element member {
+        element name { '(void)' },
+        element state { '(void)' },
+        element party { '(void)' },
+        element image_url { 'placeholder.jpg' },
+        element period {
+          attribute from { '(void)' },
+          attribute to { '(void)' }
+        }
+      }
+    else
+      for $member in $chamber_members
+      for $term in $member/terms/item/item[local:normalize(chamber) = local:normalize($chamber_name)]
+      return element member {
+        element name { local:normalize($member/name) },
+        element state { local:normalize($member/state) },
+        element party { local:normalize($member/partyName) },
+        element image_url { local:normalize($member/depiction/imageUrl) },
+        element period {
+          attribute from { local:normalize($term/startYear) },
+          attribute to { local:normalize($term/endYear) }
+        }
+      }
+},
+
           element sessions {
             for $session in $congress_info//sessions/item[chamber = $chamber_name]
             return element session {
-              element number { string($session/number) },
+              element number {
+                if (empty($session/number)) then -1 else local:normalize(number($session/number))
+              },
               element period {
                 attribute from { local:normalize($session/startDate) },
                 attribute to { local:normalize($session/endDate) }
