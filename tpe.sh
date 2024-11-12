@@ -30,6 +30,13 @@ if [ -z "$CONGRESS_NUMBER" ]; then
     generate_error_xml "Congress number must be provided"
 fi
 
+# Verificacion de que CONGRESS_NUMBER sea un numero entero
+if ! echo "$CONGRESS_NUMBER" | egrep -q '^[0-9]+$'; then
+    echo "Error: Congress number must be a valid integer." >&2
+    generate_error_xml "Congress number must be a valid integer"
+    exit 1
+fi
+
 if [ "$CONGRESS_NUMBER" -lt 1 ] || [ "$CONGRESS_NUMBER" -gt 118 ]; then
     echo "Error: Congress number must be between 1 and 118." >&2
     generate_error_xml "Congress number must be between 1 and 118"
@@ -54,6 +61,7 @@ echo "Combining $CONGRESS_INFO and $CONGRESS_MEMBERS_INFO into $CONGRESS_DATA...
 java net.sf.saxon.Query -s:$CONGRESS_INFO -q:$EXTRACT_CONGRESS_DATA \
     congress_members_info="../$CONGRESS_MEMBERS_INFO" \
     congress_info="../$CONGRESS_INFO" \
+    congress_data_schema="../$CONGRESS_DATA_SCHEMA" \
     -o:$CONGRESS_DATA -ext:on -t > /dev/null 2>&1
 
 validate_xml_with_schema $CONGRESS_DATA $CONGRESS_DATA_SCHEMA
@@ -61,4 +69,4 @@ validate_xml_with_schema $CONGRESS_DATA $CONGRESS_DATA_SCHEMA
 # Procesar el archivo combinado con XSLT
 echo "Generating HTML page from $CONGRESS_DATA..."
 java net.sf.saxon.Transform -s:$CONGRESS_DATA -xsl:$GENERATE_HTML -o:$CONGRESS_PAGE
-echo "HTML page generated: $CONGRESS_PAGE"
+echo "$CONGRESS_PAGE - HTML page completed"

@@ -1,5 +1,6 @@
 declare variable $congress_members_info external;
 declare variable $congress_info external;
+declare variable $congress_data_schema external;
 
 declare function local:normalize($value) {
   if (normalize-space(string($value)) != "") then normalize-space(string($value)) else $value
@@ -7,6 +8,7 @@ declare function local:normalize($value) {
 
 declare function local:generate-xml($congress_members_info as document-node(), $congress_info as document-node()) as element(data) {
   element data {
+    attribute xsi:noNamespaceSchemaLocation {$congress_data_schema},
     element congress {
       element name { local:normalize($congress_info//congress/name) },
       element period {
