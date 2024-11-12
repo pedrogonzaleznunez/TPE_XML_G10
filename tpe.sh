@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Importar la libreria de funciones 
+# Libreria de funciones 
 source tools/lib.sh
 
 CONGRESS_NUMBER=$1
@@ -34,7 +34,6 @@ fi
 if ! echo "$CONGRESS_NUMBER" | egrep -q '^[0-9]+$'; then
     echo "Error: Congress number must be a valid integer." >&2
     generate_error_xml "Congress number must be a valid integer"
-    exit 1
 fi
 
 if [ "$CONGRESS_NUMBER" -lt 1 ] || [ "$CONGRESS_NUMBER" -gt 118 ]; then
@@ -48,15 +47,15 @@ if [ -z "$CONGRESS_API" ]; then
     generate_error_xml "CONGRESS_API environment variable is not set"
 fi
 
-# Descargar datos del Congreso
+# Descarga de datos del Congreso
 download_data "https://api.congress.gov/v3/congress/$CONGRESS_NUMBER?format=xml&api_key=${CONGRESS_API}" $CONGRESS_INFO
-# Descargar datos de los Miembros
+# Descarga de datos de los Miembros
 download_data "https://api.congress.gov/v3/member/congress/$CONGRESS_NUMBER?format=xml&currentMember=false&limit=500&api_key=${CONGRESS_API}" $CONGRESS_MEMBERS_INFO
 
 validate_xml $CONGRESS_INFO
 validate_xml $CONGRESS_MEMBERS_INFO
 
-# Combinar los archivos de datos en un unico XML
+# Combinacion de los archivos de datos en un unico XML
 echo "Combining $CONGRESS_INFO and $CONGRESS_MEMBERS_INFO into $CONGRESS_DATA..."
 java net.sf.saxon.Query -s:$CONGRESS_INFO -q:$EXTRACT_CONGRESS_DATA \
     congress_members_info="../$CONGRESS_MEMBERS_INFO" \
@@ -66,7 +65,10 @@ java net.sf.saxon.Query -s:$CONGRESS_INFO -q:$EXTRACT_CONGRESS_DATA \
 
 validate_xml_with_schema $CONGRESS_DATA $CONGRESS_DATA_SCHEMA
 
-# Procesar el archivo combinado con XSLT
+# REVISAR - los congresos del 1 al 73, supuestamente non validan contra el xsd
+# java sax.Writer -v -n -s -f data/congress_data.xml 2>&1 > /dev/null
+
+# Procesamiento del archivo combinado con XSLT
 echo "Generating HTML page from $CONGRESS_DATA..."
 java net.sf.saxon.Transform -s:$CONGRESS_DATA -xsl:$GENERATE_HTML -o:$CONGRESS_PAGE
 echo "$CONGRESS_PAGE - HTML page completed"

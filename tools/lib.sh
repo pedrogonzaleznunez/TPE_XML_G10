@@ -15,6 +15,7 @@ generate_error_xml() {
 download_data() {
     local url=$1
     local output_file=$2
+    echo "Downloading $output_file..."
     curl -# -X GET "$url" -H "accept: application/xml" -o $output_file
     if [ $? -ne 0 ] || [ ! -s $output_file ]; then
         echo "Error: Failed to fetch data from $url" >&2
@@ -22,12 +23,12 @@ download_data() {
     fi
 }
 
-# Validar archivos XML
+# Validacion de archivos XML
 validate_xml() {
     local xml_file=$1
     echo "Validating $xml_file..."
-    java sax.Writer $xml_file 2>&1 >/dev/null
-    if [ $? -ne 0 ]; then
+    output=$(java sax.Writer $xml_file 2>&1 > /dev/null)
+    if echo $output | egrep -q "Error"; then
         echo "Error: $xml_file is not a valid XML file." >&2
         generate_error_xml "$xml_file is not a valid XML file."
     else
@@ -35,13 +36,13 @@ validate_xml() {
     fi
 }
 
-# Validar el XML combinado
+# Validacion del XML combinado
 validate_xml_with_schema() {
     local xml_file=$1
     local schema_file=$2
     echo "Validating $xml_file with schema $schema_file..."
-    java sax.Writer -v -n -s -f $xml_file > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
+    output=$(java sax.Writer -v -n -s -f $xml_file 2>&1 > /dev/null)
+    if echo $output | egrep -q "Error"; then
         echo "Error: $xml_file is not a valid XML file according to the schema $schema_file." >&2
         generate_error_xml "$xml_file is not a valid XML file according to the schema $schema_file."
     else
